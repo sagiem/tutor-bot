@@ -1,25 +1,25 @@
 package ru.sagiem.tutorbot.telegram;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.sagiem.tutorbot.service.UpdateDispatcher;
 
 @Component
+@AllArgsConstructor
 public class Bot extends TelegramWebhookBot {
 
     private final TelegramProperties telegramProperties;
+    private final UpdateDispatcher updateDispatcher;
 
-    @Autowired
-    public Bot(TelegramProperties telegramProperties) {
-        super(telegramProperties.getToken());
-        this.telegramProperties = telegramProperties;
-    }
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        return null;
+
+        return updateDispatcher.distribute(update, this);
     }
 
     @Override
