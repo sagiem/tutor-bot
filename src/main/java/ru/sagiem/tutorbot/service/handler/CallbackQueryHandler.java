@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import ru.sagiem.tutorbot.service.manager.FeedbackManager;
-import ru.sagiem.tutorbot.service.manager.HelpManager;
+import ru.sagiem.tutorbot.service.manager.feedback.FeedbackManager;
+import ru.sagiem.tutorbot.service.manager.help.HelpManager;
 import ru.sagiem.tutorbot.telegram.Bot;
 
 import static ru.sagiem.tutorbot.service.data.CallbackData.*;
@@ -19,10 +19,10 @@ public class CallbackQueryHandler {
         String callbackData = callbackQuery.getData();
         switch (callbackData){
             case FEEDBACK -> {
-                return feedbackManager.answerCallbackQuery(callbackQuery);
+                return feedbackManager.answerCallbackQuery(callbackQuery, bot);
             }
             case HELP -> {
-                return helpManager.answerCallbackQuery(callbackQuery);
+                return helpManager.answerCallbackQuery(callbackQuery, bot);
             }
 
         }
