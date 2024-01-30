@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.sagiem.tutorbot.entity.User;
+import ru.sagiem.tutorbot.repository.UserRepository;
 import ru.sagiem.tutorbot.service.handler.CallbackQueryHandler;
 import ru.sagiem.tutorbot.service.handler.CommandHandler;
 import ru.sagiem.tutorbot.service.handler.MessageHandler;
@@ -19,6 +21,7 @@ public class UpdateDispatcher {
     private final CallbackQueryHandler callbackQueryHandler;
     private final MessageHandler messageHandler;
     private final CommandHandler commandHandler;
+    private final UserRepository userRepository;
 
     public BotApiMethod<?> distribute(Update update, Bot bot) {
         if (update.hasCallbackQuery())
@@ -26,8 +29,13 @@ public class UpdateDispatcher {
 
         if (update.hasMessage()) {
             Message message = update.getMessage();
-            if (message.hasText() && message.getText().charAt(0) == '/')
-                    return commandHandler.answer(message, bot);
+            if (message.hasText() && message.getText().charAt(0) == '/') {
+                userRepository.save(User.builder()
+                        .chatId(message.getChatId())
+                        .build());
+
+                return commandHandler.answer(message, bot);
+            }
             return messageHandler.answer(message, bot);
         }
 
