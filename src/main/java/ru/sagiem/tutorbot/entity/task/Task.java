@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "timetable")
+@Table(name = "task")
 @Getter
 @Setter
 @Builder

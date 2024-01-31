@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 
 @Aspect
 @Component
+@Order(10)
 @AllArgsConstructor
 public class UserCreationAspect {
     private final UserRepository userRepository;
@@ -39,8 +41,7 @@ public class UserCreationAspect {
     @Around("distributeMethodPointcut()")
     public Object distributeMethodAdvice(ProceedingJoinPoint joinPoint)
             throws Throwable{
-        Object[] args = joinPoint.getArgs();
-        Update update = (Update) args[0];
+        Update update = (Update) joinPoint.getArgs()[0];
         User telegramUser;
         if (update.hasMessage()) {
             telegramUser = update.getMessage().getFrom();
@@ -65,7 +66,7 @@ public class UserCreationAspect {
                 ru.sagiem.tutorbot.entity.user.User.builder()
                         .chatId(telegramUser.getId())
                         .action(Action.FREE)
-                        .role(Role.USER)
+                        .role(Role.EMPTY)
                         .userDetails(details)
                         .build();
         userRepository.save(newUser);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import ru.sagiem.tutorbot.service.manager.auth.AuthManager;
 import ru.sagiem.tutorbot.service.manager.feedback.FeedbackManager;
 import ru.sagiem.tutorbot.service.manager.help.HelpManager;
 import ru.sagiem.tutorbot.service.manager.progress_control.ProgressControlManager;
@@ -21,6 +22,7 @@ public class CallbackQueryHandler {
     private final TimetableManager timetableManager;
     private final TaskManager taskManager;
     private final ProgressControlManager progressControlManager;
+    private final AuthManager authManager;
 
     public BotApiMethod<?> answer(CallbackQuery callbackQuery, Bot bot) {
         String callbackData = callbackQuery.getData();
@@ -33,6 +35,9 @@ public class CallbackQueryHandler {
 
         if (PROGRESS.equals(keyWord))
             return progressControlManager.answerCallbackQuery(callbackQuery, bot);
+
+        if (AUTH.equals(keyWord))
+            return authManager.answerCallbackQuery(callbackQuery, bot);
 
         switch (callbackData) {
             case FEEDBACK -> {
