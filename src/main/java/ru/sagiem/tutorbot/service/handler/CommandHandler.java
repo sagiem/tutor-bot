@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.sagiem.tutorbot.service.manager.feedback.FeedbackManager;
 import ru.sagiem.tutorbot.service.manager.help.HelpManager;
+import ru.sagiem.tutorbot.service.manager.profile.ProfileManager;
 import ru.sagiem.tutorbot.service.manager.progress_control.ProgressControlManager;
 import ru.sagiem.tutorbot.service.manager.start.StartManager;
 import ru.sagiem.tutorbot.service.manager.task.TaskManager;
@@ -26,6 +27,7 @@ public class CommandHandler {
     private final TimetableManager timetableManager;
     private final TaskManager taskManager;
     private final ProgressControlManager progressControlManager;
+    private final ProfileManager profileManager;
 
     public BotApiMethod<?> answer(Message message, Bot bot) {
         String command = message.getText();
@@ -47,6 +49,9 @@ public class CommandHandler {
             }
             case PROGRESS -> {
                 return progressControlManager.answerCommand(message, bot);
+            }
+            case PROFILE -> {
+                return profileManager.answerCommand(message, bot);
             }
             default -> {
                 return defaultAnswer(message);
